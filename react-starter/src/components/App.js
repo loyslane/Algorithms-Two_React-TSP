@@ -1,14 +1,65 @@
-// Step 1: Import React, and Component from react.
-// Step 2: Import render from react-dom
-// Step 3: Import MoviesList from MoviesList
+import React from 'react';
+import TSPRunner from './TSPRunner';
 
-// Step 4: Write a class called App, extending Component.
-// Step 5: Write a constructor function without passing anything into it.
-// Step 6: Inside the constructor function, call super without passing anything into it.
-// Step 7: Inside the constructor function, create a state on this, and set it to an object.
-// Step 8: Inside the object, set a key to movies, and the value to an array of movies
-// Step 9: Write a render function.
-// Step 10: Inside the render function, write a return statement.
-// Step 11: Inside the return statement, write a selfclosing tag called MoviesList
-// Step 12: Inside the selfclosing tag, give it an attribute called movies, and pass it this.state.movies inside a set of curly bracket.
-// Step 13: Outside the class, export the App class as a default.
+const coordinates = [];
+
+let canvasContainerStyle = {
+  margin: "10 auto"
+}
+let canvasStyle = {
+  width: "450px",
+  height: "450px",
+  backgroundColor: "#f4f4f4"
+}
+class TSPCanvas extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+    };
+  } 
+
+  updateTSPVertices(results) {
+    for (let i = 0; i < results.BT.length; i++) {
+      coordinates.push([results.BT[i].x,results.BT[i].y]);
+    }
+    console.log(results);
+  }
+  updateTSPPath() {
+    for (let i = 0; i < coordinates.length; i++) {
+      if (!coordinates[i + 1]) {
+        this.context.beginPath();
+        this.context.lineWidth = 5;
+        this.context.moveTo(coordinates[i][0],coordinates[i][1]);
+        this.context.lineTo(coordinates[0][0],coordinates[0][1]);
+        this.context.stroke();  
+      } else {
+        this.context.beginPath();
+        this.context.lineWidth = 5;
+        this.context.moveTo(coordinates[i][0],coordinates[i][1]);
+        this.context.lineTo(coordinates[i + 1][0],coordinates[i + 1][1]);
+        this.context.stroke();
+      }
+    }
+  }
+  drawCircle() {
+    for (let i = 0; i < coordinates.length; i++) {
+      this.context.fillStyle = 'blue';
+      this.context.beginPath();
+      this.context.arc(coordinates[i][0],coordinates[i][1],20,0,2*Math.PI,false);
+      this.context.fill();
+      this.context.stroke();
+    }
+  }
+  click() {
+    this.drawCircle(coordinates);
+    this.updateTSPPath(coordinates);
+    this.drawCircle(coordinates);
+  }
+  render() {
+    return (<div style={canvasContainerStyle}> <TSPRunner onComplete={this.updateTSPVertices}/>
+             <canvas id="TSP" ref={(c) => this.context = c.getContext('2d')} height={canvasStyle.height} width={canvasStyle.width} style={canvasStyle} onClick={() => this.click()} />
+           </div>
+    );
+  }
+}
+export default TSPCanvas;

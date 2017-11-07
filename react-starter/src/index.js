@@ -3,4 +3,5 @@ import { render } from 'react-dom';
 
 import App from './components/App';
 
-render(<App />, document.getElementById('root'));
+render(<div><h2>Realtime Travelling Salesman Problem (TSP)</h2>
+<App /></div>, document.getElementById('root'));
